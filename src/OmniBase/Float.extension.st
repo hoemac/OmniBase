@@ -8,10 +8,10 @@ Float >> asBtreeKeyOfSize: keySize [
 
 { #category : #'*omnibase' }
 Float class >> odbDeserialize: deserializer [
+	"The * 1 is here to give a chance to the VM to create a SmallFloat64 if it can "
 
-	| stream number |
-	stream := deserializer stream.
-	number := self basicNew: 4.
-	1 to: 4 do: [:i | number basicAt: i put: stream getByte ].
-	^number
+	^ BoxedFloat64  basicNew
+		at: 1 put: deserializer stream getInteger;
+		at: 2 put: deserializer stream getInteger;
+		* 1
 ]
