@@ -1,1 +1,1 @@
-Several Fixes. Runs in Pharo 6.1 Windows
+Several Fixes. Runs in Pharo 7 (OS Windows)
