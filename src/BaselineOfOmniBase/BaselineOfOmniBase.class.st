@@ -9,7 +9,7 @@ BaselineOfOmniBase >> baseline: spec [
 	<baseline>
 	
 	spec for: #common do: [
-		self osprocess: spec.
+		"self osprocess: spec."
 		
 		spec package: 'OmniBase' "with: [ spec requires: #('OSProcess')]".
 		spec package: 'OmniBase-Tests' ]
