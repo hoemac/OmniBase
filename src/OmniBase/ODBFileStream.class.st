@@ -109,9 +109,15 @@ ODBFileStream class >> createOn: pathName createMode: createMode accessMode: acc
 
 { #category : #'create/open' }
 ODBFileStream class >> createWithoutSharingAndLockingOn: pathName accessMode: accessMode [
-	| stream  |
-	stream := FileStream fileNamed: pathName.
-	accessMode = #accessModeReadOnly ifTrue: [stream readOnly].
+	| stream  aFileRef |
+	"stream := FileStream fileNamed: pathName.
+	accessMode = #accessModeReadOnly ifTrue: [stream readOnly]."
+	"Migrate to Pharo 7 Streams:"
+	
+	aFileRef := pathName asFileReference.
+	stream := (accessMode = #accessModeReadOnly) ifTrue: [ aFileRef readStream ] ifFalse:   [ aFileRef writeStream]. 
+	
+	
 	^self new openOn: pathName fileHandle: stream.
 ]
 

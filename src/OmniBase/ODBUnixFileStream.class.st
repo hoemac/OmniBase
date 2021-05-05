@@ -15,7 +15,7 @@ Class {
 
 { #category : #private }
 ODBUnixFileStream class >> createFileStreamForPath: pathString createMode: createMode [
-	^ FileStream concreteStream
+	^ ZnEncodedWriteStream  "migrated to Pharo 7 file streams. Old receiver: FileStream concreteStream"
 			perform: (self streamCreationSelectorForMode: createMode)
 			with: pathString
 ]

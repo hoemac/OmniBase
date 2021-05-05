@@ -1,49 +1,47 @@
 Class {
 	#name : #OmniBaseTest,
 	#superclass : #TestCase,
-	#category : 'OmniBase-Tests'
+	#category : #'OmniBase-Tests'
 }
 
 { #category : #benchmarks }
 OmniBaseTest >> benchmarkCommitNewObjects [
+
 	| db trn dict time timeArray maxIndex maxTime stream |
 	stream := WriteStream on: String new.
-	db := OmniBase openOn: self testDir.
+	db := OmniBase openOn: self dir.
 	timeArray := Array new: 6.
 	maxTime := 0.
-	1 to: timeArray size
-		do: 
-			[:count | 
-			trn := db newTransaction.
-			dict := OmniBase newPersistentDictionary.
-			trn store: dict.
-			1 to: 100
-				do: 
-					[:i | 
-					dict at: i
-						put: (Array 
-								with: 'Test array'
-								with: i
-								with: i printString
-								with: (Association key: 'Bla' value: 'Blala'))].
-			time := Time millisecondsToRun: [trn commit].
-			trn abort.
-			stream
-				nextPutAll: ' Commit time: ' , (time / 1000) asFloat printString , ' sec';
-				cr.
-			timeArray at: count put: time.
-			time > maxTime 
-				ifTrue: 
-					[maxTime := time.
-					maxIndex := count]].
+	1 to: timeArray size do: [ :count | 
+		trn := db newTransaction.
+		dict := OmniBase newPersistentDictionary.
+		trn store: dict.
+		1 to: 100 do: [ :i | 
+			dict at: i put: (Array
+					 with: 'Test array'
+					 with: i
+					 with: i printString
+					 with: (Association key: 'Bla' value: 'Blala')) ].
+		time := Time millisecondsToRun: [ trn commit ].
+		trn abort.
+		stream
+			nextPutAll:
+				' Commit time: ' , (time / 1000) asFloat printString , ' sec';
+			cr.
+		timeArray at: count put: time.
+		time > maxTime ifTrue: [ 
+			maxTime := time.
+			maxIndex := count ] ].
 	time := 0.
-	1 to: timeArray size do: [:i | i = maxIndex ifFalse: [time := time + (timeArray at: i)]].
+	1 to: timeArray size do: [ :i | 
+	i = maxIndex ifFalse: [ time := time + (timeArray at: i) ] ].
 	time := time / (timeArray size - 1).
 	stream
 		nextPutAll: '------------------------';
 		cr.
 	stream
-		nextPutAll: 'Average time: ' , (time / 1000) asFloat printString , ' sec';
+		nextPutAll:
+			'Average time: ' , (time / 1000) asFloat printString , ' sec';
 		cr.
 	db close.
 	Transcript show: stream contents
@@ -68,7 +66,7 @@ OmniBaseTest >> collection [
 		add: 13 factorial;
 		add: 215345245.3425;
 		add: 2 / 3;
-		add: Date today;
+		add: (Date today start offset: 0); "Omnibase persists only Date: don't care about Timezone offset"
 		add: (Time fromSeconds: 20000);
 		add: $a;
 		add: #symbol;
